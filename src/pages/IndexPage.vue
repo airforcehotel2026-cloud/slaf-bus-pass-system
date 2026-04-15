@@ -9,14 +9,14 @@
           Sri Lanka Air Force
         </h1>
         <h2 class="text-h4 text-weight-medium q-mt-none q-mb-xl opacity-90">
-          e-Pass System
+          Bus Pass System
         </h2>
         
         <q-btn 
           color="accent" 
           text-color="dark" 
           size="lg" 
-          label="Login to e-Pass Portal" 
+          label="Login to Bus Pass Portal" 
           icon-right="login" 
           class="rounded-borders glossy shadow-10" 
           padding="15px 40px" 
