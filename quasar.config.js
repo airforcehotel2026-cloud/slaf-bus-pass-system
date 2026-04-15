@@ -37,14 +37,14 @@ export default defineConfig((ctx) => {
         node: 'node22',
       },
 
-      vueRouterMode: 'history', // available values: 'hash', 'history'
+      vueRouterMode: 'hash', // available values: 'hash', 'history'
       // vueRouterBase,
       // vueDevtools,
       // vueOptionsAPI: false,
 
       // rebuildCache: true, // rebuilds Vite/linter/etc cache on startup
 
-      // publicPath: '/',
+      publicPath: ctx.prod ? '/slaf-bus-pass-system/' : '/',
       // analyze: true,
       // env: {},
       // rawDefine: {}
