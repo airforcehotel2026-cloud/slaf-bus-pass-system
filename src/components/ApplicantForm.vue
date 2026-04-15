@@ -10,18 +10,54 @@
       <q-form @submit="onSubmit" class="q-pa-lg q-gutter-md">
         
         <!-- Applicant Details -->
-        <div class="text-subtitle1 text-accent text-weight-bold q-mb-sm">Applicant Details</div>
+        <div class="text-subtitle1 text-accent text-weight-bold q-mb-sm">Applicant Details & Documents</div>
         
-        <q-input dark filled v-model="form.name" label="Full Name *" :rules="[val => !!val || 'Required']" />
+        <div class="row q-col-gutter-md">
+          <div class="col-12 col-md-8">
+            <q-input dark filled v-model="form.name" label="Full Name *" :rules="[val => !!val || 'Required']" />
+          </div>
+          <div class="col-12 col-md-4">
+            <q-file 
+              dark 
+              filled 
+              v-model="form.documentFile" 
+              label="Upload NIC/Photo *" 
+              accept="image/*,.pdf"
+              :rules="[val => !!val || 'Document is required']"
+            >
+              <template v-slot:prepend><q-icon name="attach_file" color="accent" /></template>
+            </q-file>
+          </div>
+        </div>
         
         <q-input dark filled v-model="form.address" label="Address *" :rules="[val => !!val || 'Required']" />
         
         <div class="row q-col-gutter-md">
           <div class="col-12 col-md-6">
-            <q-input dark filled v-model="form.nic" label="NIC Number *" :rules="[val => !!val || 'Required']" />
+            <q-input 
+              dark filled 
+              v-model="form.nic" 
+              label="NIC Number *" 
+              hint="Format: 123456789V or 200012345678"
+              :rules="[
+                val => !!val || 'Required',
+                val => /^[0-9]{9}[vVxX]$|^[0-9]{12}$/.test(val) || 'Invalid NIC Format'
+              ]" 
+            />
           </div>
           <div class="col-12 col-md-6">
-            <q-input dark filled v-model="form.mobile" label="Mobile No *" :rules="[val => !!val || 'Required']" mask="##########" />
+            <q-input 
+              dark filled 
+              v-model="form.mobile" 
+              label="Mobile No *" 
+              mask="##########" 
+              unmasked-value
+              :rules="[
+                val => !!val || 'Required',
+                val => val.length === 10 || 'Must be 10 digits',
+                val => /^[0-9]+$/.test(val) || 'Numbers only'
+              ]" 
+            />
           </div>
         </div>
 
@@ -123,19 +159,47 @@ const form = ref({
   nearestTown: '',
   busRouteNo: '',
   amount: '',
-  distance: ''
+  distance: '',
+  documentFile: null
 })
 
 const onSubmit = async () => {
-  const res = await appStore.submitApplication({ ...form.value })
-  if (res.success) {
-    submitted.value = true
-  } else {
+  $q.loading.show({ message: 'Uploading documents & submitting...' })
+  try {
+    let documentUrl = null
+    
+    // 1. Upload File
+    if (form.value.documentFile) {
+      const file = form.value.documentFile
+      const fileExt = file.name.split('.').pop()
+      const fileName = `${Date.now()}_${form.value.svcNo}.${fileExt}`
+      const filePath = `applications/${fileName}`
+
+      const { error: uploadError } = await appStore.uploadDocument(filePath, file)
+      if (uploadError) throw new Error('File upload failed: ' + uploadError.message)
+      
+      documentUrl = filePath
+    }
+
+    // 2. Submit Application
+    const res = await appStore.submitApplication({ 
+      ...form.value,
+      documentUrl 
+    })
+
+    if (res.success) {
+      submitted.value = true
+    } else {
+      throw new Error(res.error)
+    }
+  } catch (error) {
     $q.notify({
       color: 'negative',
-      message: 'Error submitting application: ' + res.error,
+      message: error.message,
       icon: 'error'
     })
+  } finally {
+    $q.loading.hide()
   }
 }
 
@@ -155,7 +219,8 @@ const resetForm = () => {
     nearestTown: '',
     busRouteNo: '',
     amount: '',
-    distance: ''
+    distance: '',
+    documentFile: null
   }
   submitted.value = false
 }

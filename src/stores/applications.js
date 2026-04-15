@@ -79,6 +79,20 @@ export const useApplicationStore = defineStore('applications', {
       }))
     },
 
+    async uploadDocument(path, file) {
+      this.loading = true
+      try {
+        const { data, error } = await supabase.storage
+          .from('documents')
+          .upload(path, file)
+        return { data, error }
+      } catch (error) {
+        return { error }
+      } finally {
+        this.loading = false
+      }
+    },
+
     async submitApplication(appData) {
       this.loading = true
       try {
@@ -102,7 +116,8 @@ export const useApplicationStore = defineStore('applications', {
             nearest_town: appData.nearestTown,
             bus_route_no: appData.busRouteNo,
             amount: parseFloat(appData.amount),
-            distance: parseFloat(appData.distance)
+            distance: parseFloat(appData.distance),
+            document_url: appData.documentUrl
           }])
           .select()
           .single()

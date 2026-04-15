@@ -1,95 +1,115 @@
 <template>
-  <q-page class="q-pa-lg">
-    <div class="row q-mb-xl">
-      <div class="col-12">
-        <h4 class="text-h4 text-weight-bold text-accent q-mt-none q-mb-xs">Welcome to e-PAS</h4>
-        <p class="text-subtitle1 opacity-80">You are logged in as <strong class="text-primary">{{ authStore.currentRole }}</strong>.</p>
+  <q-page class="q-pa-lg bg-dark text-white">
+    <!-- Stats Overview -->
+    <div class="row q-col-gutter-lg q-mb-xl">
+      <div class="col-12 col-sm-4">
+        <q-card class="bg-blue-10/30 border-accent shadow-10 stats-card q-pa-md">
+          <div class="row items-center justify-between">
+            <div>
+              <div class="text-overline text-grey-4">Total Requests</div>
+              <div class="text-h4 text-weight-bolder text-accent">{{ appStore.list.length }}</div>
+            </div>
+            <q-icon name="apps" size="3rem" color="accent" opacity-30 />
+          </div>
+        </q-card>
+      </div>
+      <div class="col-12 col-sm-4">
+        <q-card class="bg-blue-10/30 border-accent shadow-10 stats-card q-pa-md">
+          <div class="row items-center justify-between">
+            <div>
+              <div class="text-overline text-grey-4">Pending Approvals</div>
+              <div class="text-h4 text-weight-bolder text-warning">{{ pendingCount }}</div>
+            </div>
+            <q-icon name="pending_actions" size="3rem" color="warning" opacity-30 />
+          </div>
+        </q-card>
+      </div>
+      <div class="col-12 col-sm-4">
+        <q-card class="bg-blue-10/30 border-accent shadow-10 stats-card q-pa-md">
+          <div class="row items-center justify-between">
+            <div>
+              <div class="text-overline text-grey-4">Passes Issued</div>
+              <div class="text-h4 text-weight-bolder text-positive">{{ issuedCount }}</div>
+            </div>
+            <q-icon name="verified" size="3rem" color="positive" opacity-30 />
+          </div>
+        </q-card>
       </div>
     </div>
 
-    <!-- Applicant View -->
-    <div v-if="authStore.currentRole === 'Applicant'">
-      <div class="row q-col-gutter-lg">
-        <div class="col-12 col-lg-4 col-md-5">
-          <ApplicantForm />
-        </div>
-        
-        <div class="col-12 col-lg-8 col-md-7">
-          <div class="flex justify-between items-center q-mb-md">
-            <h4 class="text-h5 text-weight-bold text-accent q-my-none">Track My Applications</h4>
-            <q-badge color="primary" label="Live Status" class="q-pa-xs shadow-glow" />
+    <!-- Context-Aware Action Area -->
+    <div class="row q-col-gutter-lg">
+      <!-- Applicant View: Active Applications & Apply Now -->
+      <div v-if="authStore.currentRole === 'Applicant'" class="col-12">
+        <div class="row q-col-gutter-lg">
+          <div class="col-12 col-md-7">
+            <div class="flex justify-between items-center q-mb-md">
+              <h5 class="text-h5 text-weight-bold q-my-none">Active Applications</h5>
+              <q-chip color="warning" text-color="black" label="In Progress" dense />
+            </div>
+
+            <div v-if="activeApps.length > 0">
+              <ApplicationTracker v-for="app in activeApps" :key="app.id" :app="app" class="q-mb-md" />
+            </div>
+            <q-card v-else class="bg-dark border-dashed text-center q-pa-xl opacity-70">
+              <q-icon name="check_circle" size="xl" color="positive" class="q-mb-md" />
+              <div class="text-h6">No Active Applications</div>
+              <p>All your files have been processed. View them in History.</p>
+            </q-card>
           </div>
 
-          <div v-if="appStore.list.length > 0">
-            <ApplicationTracker v-for="app in appStore.list" :key="app.id" :app="app" />
+          <div class="col-12 col-md-5">
+            <q-card class="bg-blue-10 border-accent shadow-24 q-pa-lg text-center">
+              <q-img src="/slaf-crest.svg" width="80px" class="q-mb-md" />
+              <div class="text-h6 text-accent q-mb-sm text-uppercase text-weight-bolder">Need a Bus Pass?</div>
+              <p class="text-caption text-grey-4 q-mb-md">Submit your request now for digital processing.</p>
+              <q-btn 
+                color="accent" 
+                text-color="dark" 
+                size="lg" 
+                label="Apply Now" 
+                icon="add_circle" 
+                class="full-width glossy text-weight-bold" 
+                @click="showApplyDialog = true"
+              />
+            </q-card>
           </div>
-
-          <q-card v-else class="bg-dark border-dashed text-center q-pa-xl opacity-70 rounded-borders">
-            <q-icon name="assignment_late" size="xl" color="grey-7" class="q-mb-md" />
-            <div class="text-h6">No applications found</div>
-            <p>Go ahead and submit your first application using the form on the left.</p>
-          </q-card>
         </div>
+      </div>
+
+      <!-- Approver / Admin View: Review Panel -->
+      <div v-else class="col-12">
+        <div class="flex justify-between items-center q-mb-md">
+          <h5 class="text-h5 text-weight-bold q-my-none">Approval Workbench</h5>
+          <div class="q-gutter-sm">
+            <q-btn flat color="accent" icon="history" label="View Past Approvals" to="/dashboard/history" />
+            <q-chip color="primary" text-color="accent" :label="`${pendingCount} Files Awaiting`" />
+          </div>
+        </div>
+        <ApprovalWorkbench />
       </div>
     </div>
 
-    <!-- Approver / Admin View -->
-    <div v-else>
-      <div class="row q-col-gutter-lg">
-        <div class="col-12 col-lg-8">
-          <ApprovalWorkbench />
-        </div>
-        
-        <div class="col-12 col-lg-4">
-          <!-- Admin Search Section -->
-          <q-card class="bg-dark text-white border-accent shadow-5 overflow-hidden">
-            <q-card-section class="bg-primary text-accent">
-              <div class="text-h6">Global Search & Track</div>
-              <div class="text-caption">Search any officer's application status</div>
-            </q-card-section>
-            
-            <q-card-section class="q-pa-md">
-              <q-input 
-                dark 
-                filled 
-                v-model="searchSvcNo" 
-                label="Enter Service No (e.g. 33456)" 
-                @keyup.enter="performSearch"
-                bg-color="dark"
-              >
-                <template v-slot:append>
-                  <q-btn flat round icon="search" color="accent" @click="performSearch" />
-                </template>
-              </q-input>
-            </q-card-section>
+    <!-- Application Form Dialog -->
+    <q-dialog v-model="showApplyDialog" persistent>
+      <q-card class="bg-dark text-white" style="width: 700px; max-width: 90vw; border: 1px solid rgba(255,215,0,0.3)">
+        <q-card-section class="row items-center q-pb-none">
+          <div class="text-h6 text-accent">New Application</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
 
-            <!-- Search Results Display -->
-            <q-card-section v-if="searchResults.length > 0" class="q-pt-none">
-              <div class="text-overline q-mb-sm text-grey-5">Matching Applications</div>
-              <div style="max-height: 500px; overflow-y: auto;">
-                <ApplicationTracker v-for="app in searchResults" :key="app.id" :app="app" mini />
-              </div>
-            </q-card-section>
-            
-            <q-card-section v-else-if="hasSearched" class="text-center q-pa-lg">
-              <q-icon name="search_off" size="md" color="grey-6" />
-              <div class="text-grey-6">No applications found for SVC No: {{ searchSvcNo }}</div>
-            </q-card-section>
-            
-            <q-card-section v-else class="text-center q-pa-xl opacity-50">
-              <q-icon name="manage_search" size="xl" />
-              <div class="q-mt-md">Enter a Service Number to trace files</div>
-            </q-card-section>
-          </q-card>
-        </div>
-      </div>
-    </div>
+        <q-card-section class="q-pt-md">
+          <ApplicantForm @submitted="showApplyDialog = false" />
+        </q-card-section>
+      </q-card>
+    </q-dialog>
 
   </q-page>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useAuthStore } from 'stores/auth'
 import { useApplicationStore } from 'stores/applications'
 import ApplicantForm from 'components/ApplicantForm.vue'
@@ -98,6 +118,8 @@ import ApplicationTracker from 'components/ApplicationTracker.vue'
 
 const authStore = useAuthStore()
 const appStore = useApplicationStore()
+
+const showApplyDialog = ref(false)
 
 onMounted(() => {
   appStore.fetchApplications()
@@ -108,18 +130,17 @@ onUnmounted(() => {
   appStore.unsubscribeApplications()
 })
 
-// Global Search Logic
-const searchSvcNo = ref('')
-const searchResults = ref([])
-const hasSearched = ref(false)
+const activeApps = computed(() => {
+  return appStore.list.filter(app => app.status !== 'Completed / Pass Issued')
+})
 
-const performSearch = () => {
-  if (!searchSvcNo.value) return
-  hasSearched.value = true
-  searchResults.value = appStore.list.filter(app => 
-    app.svcNo.toLowerCase().includes(searchSvcNo.value.toLowerCase())
-  )
-}
+const pendingCount = computed(() => {
+  return activeApps.value.length
+})
+
+const issuedCount = computed(() => {
+  return appStore.list.filter(app => app.status === 'Completed / Pass Issued').length
+})
 </script>
 
 <style lang="scss" scoped>

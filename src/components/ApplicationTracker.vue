@@ -51,15 +51,27 @@
     </q-card-section>
 
     <!-- Detailed Footer for issued passes -->
-    <q-separator dark v-if="app.busPassNo" />
-    <q-card-section v-if="app.busPassNo" class="bg-blue-10/30 q-pa-sm border-top-glow">
-      <div class="row items-center q-col-gutter-sm">
-        <div class="col-auto">
-          <q-icon name="card_membership" color="accent" :size="mini ? 'sm' : 'lg'" class="filter-glow" />
+    <q-separator dark v-if="app.status === 'Completed / Pass Issued'" />
+    <q-card-section v-if="app.status === 'Completed / Pass Issued'" class="bg-blue-10/30 q-pa-md border-top-glow">
+      <div class="row items-center q-col-gutter-md">
+        <div class="col-12 col-sm-auto text-center">
+          <div class="bg-white q-pa-xs rounded-borders inline-block">
+            <qrcode-vue :value="verificationUrl" :size="mini ? 60 : 100" level="H" />
+          </div>
+          <div class="text-caption text-accent q-mt-xs">Verify Online</div>
         </div>
         <div class="col">
-          <div class="text-weight-bold text-accent" :class="mini ? 'text-caption' : ''">PASS ISSUED: #{{ app.busPassNo }}</div>
-          <div class="text-caption opacity-70" v-if="!mini">Collected on {{ app.dateHoToCamp }}</div>
+          <div class="text-h6 text-accent">PASS ISSUED: #{{ app.busPassNo }}</div>
+          <div class="text-subtitle2 opacity-70">Handed over on {{ app.dateHoToCamp }}</div>
+          
+          <q-btn 
+            color="accent" 
+            text-color="dark" 
+            icon="download" 
+            label="Download e-Pass (PDF)" 
+            class="q-mt-md" 
+            @click="generatePDF" 
+          />
         </div>
       </div>
     </q-card-section>
@@ -67,10 +79,71 @@
 </template>
 
 <script setup>
-defineProps({
+import QrcodeVue from 'qrcode.vue'
+import { jsPDF } from 'jspdf'
+import { computed } from 'vue'
+
+const props = defineProps({
   app: Object,
   mini: Boolean
 })
+
+const verificationUrl = computed(() => {
+  const baseUrl = window.location.origin + window.location.pathname
+  return `${baseUrl}#/verify?id=${props.app.id}`
+})
+
+const generatePDF = async () => {
+  const doc = new jsPDF({
+    orientation: 'portrait',
+    unit: 'mm',
+    format: 'a5' // Bus pass size
+  })
+
+  // Add decorative background
+  doc.setFillColor(30, 58, 138)
+  doc.rect(0, 0, 148, 30, 'F')
+  
+  // Header
+  doc.setTextColor(255, 215, 0)
+  doc.setFontSize(18)
+  doc.text('SRI LANKA AIR FORCE', 74, 15, { align: 'center' })
+  doc.setFontSize(12)
+  doc.text('ELECTRONIC BUS PASS (e-PAS)', 74, 22, { align: 'center' })
+
+  // Details
+  doc.setTextColor(0, 0, 0)
+  doc.setFontSize(10)
+  let y = 45
+  doc.text(`PASS NO: ${props.app.busPassNo}`, 20, y)
+  doc.text(`REQ ID: ${props.app.id}`, 90, y)
+  
+  y += 10
+  doc.setFont(undefined, 'bold')
+  doc.text(`${props.app.rank} ${props.app.name}`, 20, y)
+  doc.setFont(undefined, 'normal')
+  doc.text(`SVC NO: ${props.app.svcNo}`, 20, y + 5)
+  
+  y += 15
+  doc.text(`FROM: ${props.app.journeyFrom}`, 20, y)
+  doc.text(`TO: ${props.app.journeyTo}`, 90, y)
+  
+  y += 10
+  doc.text(`STATION: ${props.app.postedCamp}`, 20, y)
+  
+  // Add QR Code (Simplified: as text/rect if library isn't available, but here we expect jspdf support for images)
+  // For production we'd convert the qrcode-vue canvas to dataURL
+  const canvas = document.querySelector('.step-point.active canvas') || document.querySelector('canvas')
+  if (canvas) {
+    const qrData = canvas.toDataURL('image/png')
+    doc.addImage(qrData, 'PNG', 110, 60, 25, 25)
+  }
+
+  doc.setFontSize(8)
+  doc.text('This is a computer-generated document. Verification is required.', 74, 135, { align: 'center' })
+
+  doc.save(`BusPass_${props.app.svcNo}.pdf`)
+}
 
 const workflowSteps = [
   { label: 'Submitted', status: 'Pending Off I/C' },

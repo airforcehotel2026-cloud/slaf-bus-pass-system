@@ -12,16 +12,28 @@
           Bus Pass System
         </h2>
         
-        <q-btn 
-          color="accent" 
-          text-color="dark" 
-          size="lg" 
-          label="Login to Bus Pass Portal" 
-          icon-right="login" 
-          class="rounded-borders glossy shadow-10" 
-          padding="15px 40px" 
-          to="/login"
-        />
+        <div class="row justify-center q-gutter-md">
+          <q-btn 
+            color="accent" 
+            text-color="dark" 
+            size="lg" 
+            label="Apply for Bus Pass" 
+            icon-right="edit_document" 
+            class="rounded-borders glossy shadow-10" 
+            padding="15px 40px" 
+            to="/login"
+          />
+          <q-btn 
+            outline 
+            color="accent" 
+            size="lg" 
+            label="Track Status" 
+            icon-right="track_changes" 
+            class="rounded-borders shadow-10" 
+            padding="15px 40px" 
+            to="/dashboard/track"
+          />
+        </div>
       </div>
     </div>
   </q-page>
