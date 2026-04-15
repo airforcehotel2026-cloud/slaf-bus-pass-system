@@ -102,7 +102,9 @@
 <script setup>
 import { ref } from 'vue'
 import { useApplicationStore } from 'stores/applications'
+import { useQuasar } from 'quasar'
 
+const $q = useQuasar()
 const appStore = useApplicationStore()
 
 const submitted = ref(false)
@@ -124,9 +126,17 @@ const form = ref({
   distance: ''
 })
 
-const onSubmit = () => {
-  appStore.submitApplication({ ...form.value })
-  submitted.value = true
+const onSubmit = async () => {
+  const res = await appStore.submitApplication({ ...form.value })
+  if (res.success) {
+    submitted.value = true
+  } else {
+    $q.notify({
+      color: 'negative',
+      message: 'Error submitting application: ' + res.error,
+      icon: 'error'
+    })
+  }
 }
 
 const resetForm = () => {

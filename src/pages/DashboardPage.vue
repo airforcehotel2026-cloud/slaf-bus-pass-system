@@ -89,7 +89,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useAuthStore } from 'stores/auth'
 import { useApplicationStore } from 'stores/applications'
 import ApplicantForm from 'components/ApplicantForm.vue'
@@ -98,6 +98,15 @@ import ApplicationTracker from 'components/ApplicationTracker.vue'
 
 const authStore = useAuthStore()
 const appStore = useApplicationStore()
+
+onMounted(() => {
+  appStore.fetchApplications()
+  appStore.subscribeToApplications()
+})
+
+onUnmounted(() => {
+  appStore.unsubscribeApplications()
+})
 
 // Global Search Logic
 const searchSvcNo = ref('')

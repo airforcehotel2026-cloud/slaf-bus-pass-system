@@ -27,8 +27,8 @@
           <q-avatar size="72px" color="primary" text-color="accent" class="shadow-5 q-mb-sm">
             {{ getInitials(authStore.currentRole) }}
           </q-avatar>
-          <div class="text-weight-bold text-accent">{{ authStore.user?.name }}</div>
-          <div class="text-caption opacity-70">{{ authStore.user?.serviceNo }}</div>
+          <div class="text-weight-bold text-accent">{{ authStore.user?.email }}</div>
+          <div class="text-caption opacity-70">{{ authStore.user?.user_metadata?.service_no }}</div>
         </div>
       </div>
     
@@ -63,8 +63,8 @@ const toggleLeftDrawer = () => {
   leftDrawerOpen.value = !leftDrawerOpen.value
 }
 
-const handleLogout = () => {
-  authStore.logout()
+const handleLogout = async () => {
+  await authStore.logout()
   router.push('/login')
 }
 
