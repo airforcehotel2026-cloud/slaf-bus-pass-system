@@ -67,7 +67,7 @@
 </template>
 
 <script setup>
-const props = defineProps({
+defineProps({
   app: Object,
   mini: Boolean
 })

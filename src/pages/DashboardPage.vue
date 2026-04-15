@@ -89,7 +89,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { useAuthStore } from 'stores/auth'
 import { useApplicationStore } from 'stores/applications'
 import ApplicantForm from 'components/ApplicantForm.vue'
