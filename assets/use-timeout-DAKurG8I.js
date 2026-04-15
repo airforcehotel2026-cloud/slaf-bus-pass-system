@@ -1,0 +1,1 @@
+import{C as e,m as t,x as n}from"./vue.runtime.esm-bundler-CZwDEvpl.js";import{o as r}from"./QBtn-CVuV30J0.js";function i(){let i=null,a=t();function o(){i!==null&&(clearTimeout(i),i=null)}return e(o),n(o),{removeTimeout:o,registerTimeout(e,t){o(),r(a)===!1&&(i=setTimeout(()=>{i=null,e()},t))}}}export{i as t};
