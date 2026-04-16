@@ -93,7 +93,7 @@ const props = defineProps({
   mini: Boolean
 })
 
-const emit = defineEmits(['view'])
+defineEmits(['view'])
 
 const verificationUrl = computed(() => {
   const baseUrl = window.location.origin + window.location.pathname
