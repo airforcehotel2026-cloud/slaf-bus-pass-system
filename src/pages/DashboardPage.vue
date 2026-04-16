@@ -140,6 +140,17 @@
               <div v-else class="text-caption opacity-50">No document attached</div>
             </div>
           </div>
+
+          <!-- Pass Preview inside Dialog -->
+          <div v-if="selectedApp.status === 'Completed / Pass Issued'" class="q-mt-xl">
+             <div class="text-subtitle1 text-accent q-mb-md text-weight-bold row items-center">
+               <q-icon name="badge" class="q-mr-sm" />
+               E-Pass Preview
+             </div>
+             <div class="flex flex-center">
+                <BusPassCard :passData="dialogMappedData" />
+             </div>
+          </div>
         </q-card-section>
         
         <q-card-actions align="right" class="q-pa-md">
@@ -160,6 +171,7 @@ import { useApplicationStore } from 'stores/applications'
 import ApplicantForm from 'components/ApplicantForm.vue'
 import ApprovalWorkbench from 'components/ApprovalWorkbench.vue'
 import ApplicationTracker from 'components/ApplicationTracker.vue'
+import BusPassCard from 'components/BusPassCard.vue'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -204,6 +216,20 @@ const displayFields = computed(() => {
     'Route': `${selectedApp.value.journeyFrom} to ${selectedApp.value.journeyTo}`,
     'Station': selectedApp.value.postedCamp,
     'Status': selectedApp.value.status
+  }
+})
+
+const dialogMappedData = computed(() => {
+  if (!selectedApp.value) return {}
+  const app = selectedApp.value
+  return {
+    year: app.applicationReceivedDate ? new Date(app.applicationReceivedDate).getFullYear() : '2026',
+    fromDate: app.applicationReceivedDate ? app.applicationReceivedDate.split('T')[0] : '2026/01/01',
+    toDate: app.receivedFromCtbDate ? app.receivedFromCtbDate.split('T')[0] : '2026/12/31',
+    destination: `${app.journeyFrom} - ${app.journeyTo}`,
+    id: app.svcNo || 'N/A',
+    name: `${app.rank} ${app.name}`,
+    photo: app.documentUrl ? `https://lrscjblgerapzosnbxjw.supabase.co/storage/v1/object/public/documents/${app.documentUrl}` : null
   }
 })
 

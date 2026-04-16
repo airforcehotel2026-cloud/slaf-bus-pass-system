@@ -19,8 +19,21 @@
 
       <div class="details-grid">
         <div class="left-col">
-          <div class="smart-chip"></div>
+          <div class="header-details row-flex mb-10">
+            <div class="smart-chip"></div>
+            <div class="flex-1 q-ml-sm">
+               <span class="label-text">RANK & NAME / නිලය සහ නම</span>
+               <div class="value-text text-uppercase">{{ passData.name }}</div>
+            </div>
+          </div>
           
+          <div class="row-flex mb-10">
+            <div class="flex-1">
+              <span class="label-text">SERVICE NO / සේවා අංකය</span>
+              <div class="value-text">{{ passData.id }}</div>
+            </div>
+          </div>
+
           <div class="row-flex mb-10">
             <div class="flex-1">
               <span class="label-text">FROM / සිට</span>
@@ -50,10 +63,10 @@
             <div v-else class="photo-placeholder">PHOTO</div>
           </div>
           <div class="qr-container">
-             <div class="qr-box">
-               <img :src="`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${passData.id}`" alt="QR" class="qr-img">
+             <div class="qr-box" style="border: 1.5px solid #000; padding: 2px;">
+               <img :src="`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=SLAF-${passData.id}`" alt="QR" class="qr-img" style="width: 50px; height: 50px; display: block;">
              </div>
-             <div class="qr-id">{{ passData.id }}</div>
+             <div class="qr-id">ID: {{ passData.id }}</div>
           </div>
         </div>
       </div>

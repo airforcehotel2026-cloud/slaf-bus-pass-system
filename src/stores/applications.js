@@ -73,6 +73,7 @@ export const useApplicationStore = defineStore('applications', {
         dateHoToCamp: item.date_ho_to_camp,
         returnDateFromCamp: item.return_date_from_camp,
         hoDateToCtbReturn: item.ho_date_to_ctb_return,
+        createdAt: item.created_at, // Added timestamp mapping
         history: (item.application_history || []).map(h => ({
           step: h.step,
           role: h.role,
@@ -164,7 +165,8 @@ export const useApplicationStore = defineStore('applications', {
             nearest_town: updatedData.nearestTown,
             bus_route_no: updatedData.busRouteNo,
             amount: parseFloat(updatedData.amount),
-            distance: parseFloat(updatedData.distance)
+            distance: parseFloat(updatedData.distance),
+            document_url: updatedData.documentUrl // Added support for photo update
           })
           .eq('id', appId)
 

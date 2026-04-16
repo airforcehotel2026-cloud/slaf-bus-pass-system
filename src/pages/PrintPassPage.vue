@@ -37,15 +37,17 @@ const loading = ref(true)
 
 const mappedData = computed(() => {
   if (!app.value) return {}
+  // Check for document_url or photo_url or generic image field
+  const photoPath = app.value.document_url || app.value.documentUrl || app.value.photo_url || app.value.photoUrl
+  
   return {
     year: app.value.application_received_date ? new Date(app.value.application_received_date).getFullYear() : '2026',
     fromDate: app.value.application_received_date ? app.value.application_received_date.split('T')[0] : '2026/01/01',
     toDate: app.value.received_from_ctb_date ? app.value.received_from_ctb_date.split('T')[0] : '2026/12/31',
-    destination: `${app.value.journey_from} - ${app.value.journey_to}`,
-    id: app.value.svc_no || 'N/A',
-    name: `${app.value.rank} ${app.value.name}`,
-    photo: app.value.document_url ? `https://lrscjblgerapzosnbxjw.supabase.co/storage/v1/object/public/documents/${app.value.document_url}` : null,
-    authorization: app.value.authorization_code || 'N/A'
+    destination: `${app.value.journey_from || 'N/A'} - ${app.value.journey_to || 'N/A'}`,
+    id: app.value.svc_no || app.value.svcNo || 'N/A',
+    name: `${app.value.rank || ''} ${app.value.name || 'N/A'}`,
+    photo: photoPath ? `https://lrscjblgerapzosnbxjw.supabase.co/storage/v1/object/public/documents/${photoPath}?t=${Date.now()}` : null
   }
 })
 
@@ -66,14 +68,14 @@ onMounted(async () => {
   if (data) {
     console.log('App found for printing:', data)
     app.value = data
-    // Let images load then print
+    // Important: Wait for ALL images (logos, qr, photo) to load
+    // Using a longer timeout to ensure the card is not blank in print preview
     setTimeout(() => {
-      handlePrint()
+      loading.value = false
     }, 1500)
   } else {
-    console.warn('No data returned for ID:', route.params.id)
+    loading.value = false
   }
-  loading.value = false
 })
 
 const handlePrint = () => {

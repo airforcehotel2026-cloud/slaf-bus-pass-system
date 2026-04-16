@@ -109,7 +109,7 @@ const mappedData = computed(() => {
     destination: `${props.app.journeyFrom} - ${props.app.journeyTo}`,
     id: props.app.svcNo || 'N/A',
     name: `${props.app.rank} ${props.app.name}`,
-    photo: props.app.documentUrl ? `https://lrscjblgerapzosnbxjw.supabase.co/storage/v1/object/public/documents/${props.app.documentUrl}` : null
+    photo: props.app.documentUrl ? `https://lrscjblgerapzosnbxjw.supabase.co/storage/v1/object/public/documents/${props.app.documentUrl}?t=${Date.now()}` : null
   }
 })
 
@@ -123,15 +123,17 @@ const generatePDF = () => {
   const printContents = document.getElementById('bus-pass').outerHTML;
   // const originalContents = document.body.innerHTML; - removed unused
 
-  // Simple and effective printing as requested
+  // Simple and effective printing
   document.body.innerHTML = `
     <div style="display:flex; justify-content:center; align-items:center; min-height:100vh; background:white;">
       ${printContents}
     </div>
   `;
   
-  window.print();
-  window.location.reload(); 
+  setTimeout(() => {
+    window.print();
+    window.location.reload(); 
+  }, 1500);
 };
 
 const workflowSteps = [
