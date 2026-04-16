@@ -60,7 +60,7 @@
 
           <div class="col-12 col-md-5">
             <q-card class="bg-blue-10 border-accent shadow-24 q-pa-lg text-center">
-              <q-img src="/slaf-crest.svg" width="80px" class="q-mb-md" />
+              <q-img src="slaf-crest.png" width="80px" class="q-mb-md" />
               <div class="text-h6 text-accent q-mb-sm text-uppercase text-weight-bolder">Need a Bus Pass?</div>
               <p class="text-caption text-grey-4 q-mb-md">Submit your request now for digital processing.</p>
               <q-btn 

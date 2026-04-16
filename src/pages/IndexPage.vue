@@ -4,7 +4,7 @@
     <div class="hero-section flex flex-center text-center relative-position">
       <div class="hero-overlay"></div>
       <div class="z-top relative-position q-pa-md">
-        <q-img src="/slaf-crest.svg" width="120px" class="q-mb-md filter-glow" />
+        <q-img src="slaf-crest.png" width="120px" class="q-mb-md filter-glow" />
         <h1 class="text-h2 text-weight-bold text-accent q-mb-sm text-uppercase" style="letter-spacing: 2px;">
           Sri Lanka Air Force
         </h1>
