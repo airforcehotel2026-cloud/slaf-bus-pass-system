@@ -5,11 +5,16 @@
         <div class="text-overline text-accent line-height-1">Application ID</div>
         <div :class="mini ? 'text-subtitle2' : 'text-h6'" class="text-weight-bold">{{ app.id }}</div>
       </div>
-      <div class="text-right">
-        <div class="text-overline text-grey-4 line-height-1">Current Status</div>
-        <q-badge :color="getBadgeColor(app.status)" class="q-px-sm q-py-xs text-weight-bold">
-          {{ app.status }}
-        </q-badge>
+      <div class="text-right flex items-center">
+        <div class="q-mr-md gt-xs">
+          <div class="text-overline text-grey-4 line-height-1">Current Status</div>
+          <q-badge :color="getBadgeColor(app.status)" class="q-px-sm q-py-xs text-weight-bold">
+            {{ app.status }}
+          </q-badge>
+        </div>
+        <q-btn flat round dense icon="open_in_new" color="accent" @click="$emit('view', app)">
+          <q-tooltip>View Full Details</q-tooltip>
+        </q-btn>
       </div>
     </div>
 
@@ -87,6 +92,8 @@ const props = defineProps({
   app: Object,
   mini: Boolean
 })
+
+const emit = defineEmits(['view'])
 
 const verificationUrl = computed(() => {
   const baseUrl = window.location.origin + window.location.pathname

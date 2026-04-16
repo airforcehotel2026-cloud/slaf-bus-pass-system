@@ -144,6 +144,49 @@ export const useApplicationStore = defineStore('applications', {
       }
     },
 
+    async updateApplication(appId, updatedData) {
+      this.loading = true
+      try {
+        const { error } = await supabase
+          .from('applications')
+          .update({
+            name: updatedData.name,
+            address: updatedData.address,
+            nic: updatedData.nic,
+            mobile: updatedData.mobile,
+            rank: updatedData.rank,
+            posted_camp: updatedData.postedCamp,
+            svc_no: updatedData.svcNo,
+            journey_from: updatedData.journeyFrom,
+            journey_to: updatedData.journeyTo,
+            nearest_town: updatedData.nearestTown,
+            bus_route_no: updatedData.busRouteNo,
+            amount: parseFloat(updatedData.amount),
+            distance: parseFloat(updatedData.distance)
+          })
+          .eq('id', appId)
+
+        if (error) throw error
+
+        const { error: historyError } = await supabase
+          .from('application_history')
+          .insert([{
+            application_id: appId,
+            step: 'Updated',
+            role: 'Applicant'
+          }])
+
+        if (historyError) throw historyError
+        await this.fetchApplications()
+        return { success: true }
+      } catch (error) {
+        console.error('Update failed:', error.message)
+        return { success: false, error: error.message }
+      } finally {
+        this.loading = false
+      }
+    },
+
     async updateApplicationTracking(appId, trackingData) {
       try {
         const dbData = {}
