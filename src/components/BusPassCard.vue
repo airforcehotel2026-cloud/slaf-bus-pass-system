@@ -21,33 +21,33 @@
         <div class="left-col">
           <div class="header-details row-flex mb-10">
             <div class="smart-chip"></div>
-            <div class="flex-1 q-ml-sm">
+            <div class="flex-1 q-ml-sm overflow-hidden" style="max-width: 190px;">
                <span class="label-text">RANK & NAME / නිලය සහ නම</span>
-               <div class="value-text text-uppercase">{{ passData.name }}</div>
+               <div class="value-text text-uppercase" :style="nameStyle">{{ passData.name }}</div>
             </div>
           </div>
           
           <div class="row-flex mb-10">
             <div class="flex-1">
               <span class="label-text">SERVICE NO / සේවා අංකය</span>
-              <div class="value-text">{{ passData.id }}</div>
+              <div class="value-text" :style="{ fontSize: passData.id?.length > 12 ? '11px' : '13px' }">{{ passData.id }}</div>
             </div>
           </div>
 
           <div class="row-flex mb-10">
             <div class="flex-1">
               <span class="label-text">FROM / සිට</span>
-              <div class="value-text">{{ passData.fromDate }}</div>
+              <div class="value-text" style="font-size: 11px;">{{ passData.fromDate }}</div>
             </div>
             <div class="flex-1">
               <span class="label-text">TO / දක්වා</span>
-              <div class="value-text">{{ passData.toDate }}</div>
+              <div class="value-text" style="font-size: 11px;">{{ passData.toDate }}</div>
             </div>
           </div>
 
           <div class="mb-10">
             <span class="label-text">DESTINATION / ගමනාන්තය</span>
-            <div class="value-text small-caps">{{ passData.destination }}</div>
+            <div class="value-text small-caps" :style="{ fontSize: passData.destination?.length > 25 ? '10px' : '12px' }">{{ passData.destination }}</div>
           </div>
 
           <div>
@@ -79,10 +79,13 @@
 </template>
 
 <script setup>
-defineProps({
+import { computed } from 'vue'
+
+const props = defineProps({
   passData: {
     type: Object,
     default: () => ({
+      name: 'SAMPLE NAME',
       year: '2026',
       fromDate: '2026/01/01',
       toDate: '2026/12/31',
@@ -90,6 +93,25 @@ defineProps({
       id: 'SLAF-0001',
       photo: null
     })
+  }
+})
+
+const nameStyle = computed(() => {
+  const length = props.passData.name?.length || 0
+  let fontSize = '13px'
+  if (length > 40) fontSize = '8.5px'
+  else if (length > 30) fontSize = '10px'
+  else if (length > 20) fontSize = '11.5px'
+  
+  return {
+    fontSize,
+    lineHeight: length > 25 ? '1' : '1.1',
+    wordBreak: 'break-word',
+    maxHeight: '32px',
+    overflow: 'hidden',
+    display: '-webkit-box',
+    '-webkit-line-clamp': '2',
+    '-webkit-box-orient': 'vertical'
   }
 })
 </script>
@@ -220,6 +242,7 @@ defineProps({
   border: 1px solid rgba(0,0,0,0.1);
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
+  flex-shrink: 0;
 }
 
 .label-text {
