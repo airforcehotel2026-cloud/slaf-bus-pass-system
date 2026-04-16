@@ -121,7 +121,7 @@ const onScanSuccess = async (decodedText) => {
   }
 }
 
-const onScanFailure = (_error) => {
+const onScanFailure = () => {
   // Silent failure is better for UX while scanning
 }
 

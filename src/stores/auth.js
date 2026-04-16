@@ -40,7 +40,8 @@ export const useAuthStore = defineStore('auth', {
       this.user = session?.user || null
       if (this.user) await this.fetchProfile(this.user.id)
       
-      supabase.auth.onAuthStateChange(async (_event, session) => {
+      supabase.auth.onAuthStateChange(async (event, session) => {
+        // We use event implicitly via state changes or can just ignore it
         this.user = session?.user || null
         if (this.user) {
           await this.fetchProfile(this.user.id)
