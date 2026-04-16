@@ -66,7 +66,7 @@
               color="primary"
               @click="generatePassPDF(props.row)"
             >
-              <q-tooltip>Print e-Pass</q-tooltip>
+              <q-tooltip>Print Bus-Pass</q-tooltip>
             </q-btn>
           </q-td>
         </template>

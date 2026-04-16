@@ -4,7 +4,7 @@
 
     <q-card v-if="!submitted" class="bg-blue-10 text-white shadow-5" style="border: 1px solid rgba(255,215,0,0.3)">
       <q-card-section class="bg-primary text-accent q-pa-sm">
-        <div class="text-h6 text-center">e-PAS Request Form</div>
+        <div class="text-h6 text-center">Bus-Pass Request Form</div>
       </q-card-section>
 
       <q-form @submit="onSubmit" class="q-pa-lg q-gutter-md">
@@ -129,7 +129,7 @@
     <q-card v-else class="bg-positive text-white text-center q-pa-xl shadow-5">
       <q-icon name="check_circle" size="4rem" class="q-mb-md" />
       <h5 class="q-mt-none q-mb-sm">Application Submitted!</h5>
-      <p class="opacity-80">Your e-PAS request has been successfully recorded and forwarded to the <strong>Off I/C Section</strong>.</p>
+      <p class="opacity-80">Your Bus-Pass request has been successfully recorded and forwarded to the <strong>Off I/C Section</strong>.</p>
       <q-btn outline color="white" label="Submit Another Request" @click="resetForm" class="q-mt-md" />
     </q-card>
   </div>

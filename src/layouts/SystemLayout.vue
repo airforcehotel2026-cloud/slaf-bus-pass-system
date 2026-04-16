@@ -7,7 +7,7 @@
 
         <q-toolbar-title class="flex items-center">
           <q-img src="slaf-crest.png" width="30px" class="q-mr-sm" />
-          e-PAS System Workspace
+          Bus-Pass System Workspace
         </q-toolbar-title>
 
         <q-chip outline color="accent" text-color="white" icon="badge" class="q-mr-md shadow-3">

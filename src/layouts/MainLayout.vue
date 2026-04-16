@@ -5,7 +5,7 @@
         <q-btn flat no-caps to="/" class="q-mr-sm">
           <q-img src="slaf-crest.png" width="40px" class="q-mr-md" />
           <div class="text-left">
-            <div class="text-subtitle2 text-weight-bolder text-accent line-height-1">SLAF e-PAS</div>
+            <div class="text-subtitle2 text-weight-bolder text-accent line-height-1">SLAF Bus-Pass</div>
             <div class="text-caption opacity-70 line-height-1">Bus Pass System</div>
           </div>
         </q-btn>
@@ -14,7 +14,7 @@
 
         <div class="gt-xs q-gutter-sm">
           <q-btn flat no-caps label="Home" to="/" />
-          <q-btn flat no-caps label="Verify e-Pass" icon="qr_code_scanner" to="/verify" color="accent" />
+          <q-btn flat no-caps label="Verify Bus-Pass" icon="qr_code_scanner" to="/verify" color="accent" />
           <q-btn flat no-caps label="Track Status" icon="track_changes" to="/dashboard/track" />
         </div>
 
@@ -35,7 +35,7 @@
                 <q-item-section>Home</q-item-section>
               </q-item>
               <q-item clickable v-close-popup to="/verify">
-                <q-item-section>Verify e-Pass</q-item-section>
+                <q-item-section>Verify Bus-Pass</q-item-section>
               </q-item>
               <q-item clickable v-close-popup to="/dashboard/track">
                 <q-item-section>Track Status</q-item-section>

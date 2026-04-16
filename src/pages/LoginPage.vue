@@ -3,7 +3,7 @@
     <q-page-container class="bg-dark text-white window-height flex flex-center">
       <q-card class="bg-blue-10 shadow-24 text-center q-pa-lg" style="width: 450px; max-width: 95vw; border-radius: 16px; border: 1px solid rgba(255,215,0,0.2)">
         <q-img src="slaf-crest.png" width="80px" class="q-mb-md" />
-        <h4 class="text-h4 text-accent text-weight-bolder q-mt-none q-mb-xs">e-PAS Portal</h4>
+        <h4 class="text-h4 text-accent text-weight-bolder q-mt-none q-mb-xs">Bus-Pass Portal</h4>
         <p class="text-subtitle2 text-grey-4 q-mb-lg">SLAF Bus Pass Management System</p>
 
         <q-tabs

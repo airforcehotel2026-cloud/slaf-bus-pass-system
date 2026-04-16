@@ -143,10 +143,10 @@
 
           <!-- Pass Preview inside Dialog -->
           <div v-if="selectedApp.status === 'Completed / Pass Issued'" class="q-mt-xl">
-             <div class="text-subtitle1 text-accent q-mb-md text-weight-bold row items-center">
-               <q-icon name="badge" class="q-mr-sm" />
-               E-Pass Preview
-             </div>
+              <div class="text-subtitle1 text-accent q-mb-md text-weight-bold row items-center">
+                <q-icon name="badge" class="q-mr-sm" />
+                Bus-Pass Preview
+              </div>
              <div class="flex flex-center">
                 <BusPassCard :passData="dialogMappedData" />
              </div>

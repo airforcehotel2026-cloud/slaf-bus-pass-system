@@ -72,7 +72,7 @@
           <q-btn 
             color="primary" 
             icon="print" 
-            label="Print e-Pass" 
+            label="Print Bus-Pass" 
             class="q-mt-md" 
             @click="generatePDF" 
           />
