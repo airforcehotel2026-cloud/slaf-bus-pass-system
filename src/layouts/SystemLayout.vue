@@ -6,7 +6,7 @@
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
 
         <q-toolbar-title class="flex items-center">
-          <q-img src="/slaf-crest.svg" width="30px" class="q-mr-sm" />
+          <q-img src="slaf-crest.png" width="30px" class="q-mr-sm" />
           e-PAS System Workspace
         </q-toolbar-title>
 

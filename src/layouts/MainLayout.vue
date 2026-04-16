@@ -3,7 +3,7 @@
     <q-header elevated class="bg-primary/90 backdrop-blur">
       <q-toolbar class="q-py-sm">
         <q-btn flat no-caps to="/" class="q-mr-sm">
-          <q-img src="/slaf-crest.svg" width="40px" class="q-mr-md" />
+          <q-img src="slaf-crest.png" width="40px" class="q-mr-md" />
           <div class="text-left">
             <div class="text-subtitle2 text-weight-bolder text-accent line-height-1">SLAF e-PAS</div>
             <div class="text-caption opacity-70 line-height-1">Bus Pass System</div>
