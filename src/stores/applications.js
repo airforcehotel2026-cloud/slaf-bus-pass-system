@@ -65,6 +65,7 @@ export const useApplicationStore = defineStore('applications', {
         amount: item.amount,
         distance: item.distance,
         status: item.status,
+        documentUrl: item.document_url, // Added missing URL mapping
         applicationReceivedDate: item.application_received_date,
         hoToCtbDate: item.ho_to_ctb_date,
         receivedFromCtbDate: item.received_from_ctb_date,

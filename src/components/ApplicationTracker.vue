@@ -100,15 +100,18 @@ const props = defineProps({
 defineEmits(['view'])
 
 // Step 2: Data Mapping from guide
-const mappedData = computed(() => ({
-  year: 2026,
-  fromDate: '2026/01/01',
-  toDate: '2026/12/31',
-  destination: `${props.app.journeyFrom} - ${props.app.journeyTo}`,
-  id: props.app.svcNo,
-  name: `${props.app.rank} ${props.app.name}`,
-  photo: props.app.documentUrl ? `https://lrscjblgerapzosnbxjw.supabase.co/storage/v1/object/public/documents/${props.app.documentUrl}` : null
-}))
+const mappedData = computed(() => {
+  if (!props.app) return {}
+  return {
+    year: 2026,
+    fromDate: props.app.applicationReceivedDate ? props.app.applicationReceivedDate.split('T')[0] : '2026/01/01',
+    toDate: props.app.receivedFromCtbDate ? props.app.receivedFromCtbDate.split('T')[0] : '2026/12/31',
+    destination: `${props.app.journeyFrom} - ${props.app.journeyTo}`,
+    id: props.app.svcNo || 'N/A',
+    name: `${props.app.rank} ${props.app.name}`,
+    photo: props.app.documentUrl ? `https://lrscjblgerapzosnbxjw.supabase.co/storage/v1/object/public/documents/${props.app.documentUrl}` : null
+  }
+})
 
 const verificationUrl = computed(() => {
   const baseUrl = window.location.origin + window.location.pathname

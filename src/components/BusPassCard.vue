@@ -1,71 +1,63 @@
 <template>
-  <!-- Card Container (CR80 Standard) -->
   <div class="card-container" id="bus-pass">
-    <!-- Sidebar -->
     <div class="sidebar">TRAVEL PASS</div>
 
     <div class="main-content">
-      <!-- Watermark -->
       <img src="https://airforcehotel2026-cloud.github.io/slaf-bus-pass-system/slaf-crest.png" class="watermark" alt="SLAF Watermark">
 
-      <!-- Header with Logos -->
       <div class="header-row">
         <div class="logo-group">
-          <img src="https://www.sltb.lk/assets/sltblogo-DiHTzX2Z.png" alt="SLTB" class="h-10 w-auto">
-          <div class="h-6 w-px bg-slate-200 mx-1"></div>
-          <img src="https://airforcehotel2026-cloud.github.io/slaf-bus-pass-system/slaf-crest.png" alt="SLAF" class="h-10 w-auto">
+          <img src="https://www.sltb.lk/assets/sltblogo-DiHTzX2Z.png" alt="SLTB" class="logo-img">
+          <div class="divider"></div>
+          <img src="https://airforcehotel2026-cloud.github.io/slaf-bus-pass-system/slaf-crest.png" alt="SLAF" class="logo-img">
         </div>
         <div class="text-right">
           <span class="label-text">VALID UNTIL / වලංගු කාලය</span>
-          <div class="text-red-800 font-extrabold text-[12px] italic">ANNUAL PASS {{ passData.year }}</div>
+          <div class="annual-pass-text">ANNUAL PASS {{ passData.year }}</div>
         </div>
       </div>
 
-      <!-- Information Section -->
-      <div class="grid grid-cols-[1fr_105px] gap-4 flex-1">
-        <div class="flex flex-col">
-          <!-- Smart Chip Design -->
+      <div class="details-grid">
+        <div class="left-col">
           <div class="smart-chip"></div>
           
-          <div class="grid grid-cols-2 gap-2 mb-3">
-            <div>
+          <div class="row-flex mb-10">
+            <div class="flex-1">
               <span class="label-text">FROM / සිට</span>
               <div class="value-text">{{ passData.fromDate }}</div>
             </div>
-            <div>
+            <div class="flex-1">
               <span class="label-text">TO / දක්වා</span>
               <div class="value-text">{{ passData.toDate }}</div>
             </div>
           </div>
 
-          <div class="mb-3">
+          <div class="mb-10">
             <span class="label-text">DESTINATION / ගමනාන්තය</span>
-            <div class="value-text text-sm uppercase">{{ passData.destination }}</div>
+            <div class="value-text small-caps">{{ passData.destination }}</div>
           </div>
 
           <div>
             <span class="label-text">AUTHORIZED BY / බලයලත් නිලධාරී</span>
-            <div class="border-b border-dashed border-slate-300 w-32 h-4 mb-1"></div>
-            <div class="text-[8px] font-bold text-slate-400">SLAF / SLTB HQ</div>
+            <div class="signature-line"></div>
+            <div class="auth-subtext">SLAF / SLTB HQ</div>
           </div>
         </div>
 
-        <!-- Photo and QR Code -->
-        <div class="flex flex-col items-end">
+        <div class="right-col">
           <div class="photo-slot">
-            <img v-if="passData.photo" :src="passData.photo" class="w-full h-full object-cover">
-            <div v-else class="text-[9px] text-slate-400 font-bold">PHOTO</div>
+            <img v-if="passData.photo" :src="passData.photo" class="full-img">
+            <div v-else class="photo-placeholder">PHOTO</div>
           </div>
-          <div class="mt-2 text-center">
-             <div class="bg-white p-1 rounded-sm shadow-sm border border-slate-100">
-               <img :src="`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${passData.id}`" alt="QR" class="w-12 h-12">
+          <div class="qr-container">
+             <div class="qr-box">
+               <img :src="`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${passData.id}`" alt="QR" class="qr-img">
              </div>
-             <div class="text-[6px] text-slate-400 mt-1">{{ passData.id }}</div>
+             <div class="qr-id">{{ passData.id }}</div>
           </div>
         </div>
       </div>
 
-      <!-- Footer -->
       <div class="footer">
         Sri Lanka Transport Board, No 200, Kirula Road, Colombo 05. OFFICIAL DOCUMENT.
       </div>
@@ -90,6 +82,7 @@ defineProps({
 </script>
 
 <style scoped>
+/* Reset and Container */
 .card-container {
   width: 420px;
   height: 260px;
@@ -102,6 +95,7 @@ defineProps({
   box-shadow: 0 4px 20px rgba(0,0,0,0.05);
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
+  font-family: 'Inter', sans-serif;
 }
 
 .sidebar {
@@ -147,36 +141,72 @@ defineProps({
   justify-content: space-between;
   align-items: center;
   border-bottom: 2px solid #991b1b;
-  padding-bottom: 10px;
-  margin-bottom: 12px;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .logo-group {
   display: flex;
   align-items: center;
+}
+
+.logo-img {
+  height: 35px;
+  width: auto;
+}
+
+.divider {
+  height: 24px;
+  width: 1px;
+  background-color: #e2e8f0;
+  margin: 0 8px;
+}
+
+.annual-pass-text {
+  color: #991b1b;
+  font-weight: 900;
+  font-size: 12px;
+  font-style: italic;
+}
+
+.details-grid {
+  display: flex;
+  gap: 15px;
+  flex: 1;
+}
+
+.left-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.right-col {
+  width: 105px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.row-flex {
+  display: flex;
   gap: 10px;
 }
+
+.flex-1 { flex: 1; }
+
+.mb-10 { margin-bottom: 10px; }
 
 .smart-chip {
   width: 35px;
   height: 28px;
   background: linear-gradient(135deg, #ffd700 0%, #b8860b 100%) !important;
   border-radius: 4px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   position: relative;
   border: 1px solid rgba(0,0,0,0.1);
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
-}
-
-.smart-chip::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: rgba(0,0,0,0.2);
 }
 
 .label-text {
@@ -189,15 +219,33 @@ defineProps({
 }
 
 .value-text {
-  font-size: 14px;
+  font-size: 13px;
   color: #0f172a;
   font-weight: 800;
-  line-height: 1.2;
+  line-height: 1.1;
+}
+
+.small-caps {
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+.signature-line {
+  border-bottom: 1px dashed #cbd5e1;
+  width: 120px;
+  height: 12px;
+  margin-bottom: 2px;
+}
+
+.auth-subtext {
+  font-size: 8px;
+  font-weight: bold;
+  color: #94a3b8;
 }
 
 .photo-slot {
   width: 95px;
-  height: 115px;
+  height: 110px;
   border: 1px solid #e2e8f0;
   border-radius: 6px;
   background-color: #f8fafc;
@@ -205,6 +253,41 @@ defineProps({
   align-items: center;
   justify-content: center;
   overflow: hidden;
+}
+
+.full-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-placeholder {
+  font-size: 9px;
+  color: #94a3b8;
+  font-weight: bold;
+}
+
+.qr-container {
+  margin-top: 8px;
+  text-align: center;
+}
+
+.qr-box {
+  background: white;
+  padding: 4px;
+  border-radius: 4px;
+  border: 1px solid #f1f5f9;
+}
+
+.qr-img {
+  width: 45px;
+  height: 45px;
+}
+
+.qr-id {
+  font-size: 6px;
+  color: #94a3b8;
+  margin-top: 2px;
 }
 
 .footer {
@@ -216,7 +299,12 @@ defineProps({
 }
 
 @media print {
-  body { background: white !important; padding: 0 !important; }
-  .card-container { border: 1px solid #000 !important; box-shadow: none !important; }
+  body { background: white !important; }
+  .card-container { 
+    box-shadow: none !important; 
+    border: 1px solid #000 !important; 
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
 }
 </style>

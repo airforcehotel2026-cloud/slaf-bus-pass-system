@@ -114,10 +114,10 @@ const mappedData = computed(() => {
   const app = selectedApp.value
   return {
     year: 2026,
-    fromDate: '2026/01/01',
-    toDate: '2026/12/31',
+    fromDate: app.applicationReceivedDate ? app.applicationReceivedDate.split('T')[0] : '2026/01/01',
+    toDate: app.receivedFromCtbDate ? app.receivedFromCtbDate.split('T')[0] : '2026/12/31',
     destination: `${app.journeyFrom} - ${app.journeyTo}`,
-    id: app.svcNo,
+    id: app.svcNo || 'N/A',
     name: `${app.rank} ${app.name}`,
     photo: app.documentUrl ? `https://lrscjblgerapzosnbxjw.supabase.co/storage/v1/object/public/documents/${app.documentUrl}` : null
   }
