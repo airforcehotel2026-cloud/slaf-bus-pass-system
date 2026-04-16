@@ -128,6 +128,7 @@ const generatePassPDF = (row) => {
   // Wait for Vue to update mappedData
   setTimeout(() => {
     const printContents = document.getElementById('history-pass-card').outerHTML;
+    // const originalContents = document.body.innerHTML; - removed unused
     document.body.innerHTML = `
       <div style="display:flex; justify-content:center; align-items:center; min-height:100vh; background:white;">
         ${printContents}

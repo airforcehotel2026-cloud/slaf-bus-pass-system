@@ -121,7 +121,7 @@ const verificationUrl = computed(() => {
 // Step 4: Printing Feature from guide
 const generatePDF = () => {
   const printContents = document.getElementById('bus-pass').outerHTML;
-  const originalContents = document.body.innerHTML;
+  // const originalContents = document.body.innerHTML; - removed unused
 
   // Simple and effective printing as requested
   document.body.innerHTML = `
