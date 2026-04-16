@@ -1,35 +1,53 @@
 <template>
-  <div class="print-page flex flex-center">
-    <div v-if="loading" class="text-center">
-       <q-spinner-oval color="primary" size="3em" />
-       <div class="q-mt-md text-weight-bold">Preparing for Print...</div>
+  <div class="print-page bg-grey-1 text-black">
+    <div v-if="loading" class="flex flex-center" style="height: 100vh">
+      <q-spinner-oval color="primary" size="4rem" />
+      <div class="q-ml-md text-h6">Preparing for Print...</div>
     </div>
     
     <div v-else-if="app" class="print-container">
-       <PassTemplate :app="app" />
-       
-       <!-- Instructions (Hidden for print) -->
-       <div class="no-print q-mt-xl text-center">
-         <q-btn color="primary" icon="print" label="Print Now" @click="handlePrint" />
-         <div class="text-caption q-mt-sm opacity-60">Press Ctrl+P if the dialog doesn't open automatically.</div>
-       </div>
+      <!-- High Fidelity Card Rendering -->
+      <BusPassCard :passData="mappedData" id="bus-pass" />
+      
+      <div class="q-mt-xl no-print text-center">
+        <q-btn color="primary" icon="print" label="PRINT NOW" size="lg" @click="handlePrint" />
+        <p class="text-caption q-mt-sm opacity-50">Press Ctrl+P if the dialog doesn't open automatically.</p>
+      </div>
     </div>
 
-    <div v-else class="text-negative">
-       Record not found!
+    <div v-else class="flex flex-center" style="height: 100vh">
+      <div class="text-center">
+        <q-icon name="error" color="negative" size="4rem" />
+        <div class="text-h5 q-mt-md">Application Record Not Found</div>
+        <q-btn flat label="Go Back" color="primary" class="q-mt-md" @click="closeWindow" />
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { supabase } from 'src/boot/supabase'
-import PassTemplate from 'components/PassTemplate.vue'
+import BusPassCard from 'components/BusPassCard.vue'
 
 const route = useRoute()
 const app = ref(null)
 const loading = ref(true)
+
+const mappedData = computed(() => {
+  if (!app.value) return {}
+  return {
+    year: app.value.application_received_date ? new Date(app.value.application_received_date).getFullYear() : '2026',
+    fromDate: app.value.application_received_date ? app.value.application_received_date.split('T')[0] : '2026/01/01',
+    toDate: app.value.received_from_ctb_date ? app.value.received_from_ctb_date.split('T')[0] : '2026/12/31',
+    destination: `${app.value.journey_from} - ${app.value.journey_to}`,
+    id: app.value.svc_no || 'N/A',
+    name: `${app.value.rank} ${app.value.name}`,
+    photo: app.value.document_url ? `https://lrscjblgerapzosnbxjw.supabase.co/storage/v1/object/public/documents/${app.value.document_url}` : null,
+    authorization: app.value.authorization_code || 'N/A'
+  }
+})
 
 onMounted(async () => {
   console.log('Fetching app with ID:', route.params.id)
@@ -46,7 +64,7 @@ onMounted(async () => {
   }
 
   if (data) {
-    console.log('App found:', data)
+    console.log('App found for printing:', data)
     app.value = data
     // Let images load then print
     setTimeout(() => {
@@ -60,6 +78,10 @@ onMounted(async () => {
 
 const handlePrint = () => {
   window.print()
+}
+
+const closeWindow = () => {
+  window.close()
 }
 </script>
 
