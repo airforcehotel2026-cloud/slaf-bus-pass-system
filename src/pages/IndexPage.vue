@@ -49,8 +49,8 @@
 
 // Hero Section styling
 .hero-section {
-  height: 100vh; // Full screen now since there's no content below it
-  background-image: url('hero-aircraft.png');
+  height: 100vh;
+  background-image: url('/hero-aircraft.png');
   background-size: cover;
   background-position: center;
   position: relative;
