@@ -70,23 +70,27 @@
           <div class="text-subtitle2 opacity-70">Handed over on {{ app.dateHoToCamp }}</div>
           
           <q-btn 
-            color="accent" 
-            text-color="dark" 
-            icon="download" 
-            label="Download e-Pass (PDF)" 
+            color="primary" 
+            icon="print" 
+            label="Print e-Pass" 
             class="q-mt-md" 
             @click="generatePDF" 
           />
         </div>
       </div>
     </q-card-section>
+
+    <!-- Hidden Render for printing -->
+    <div style="position: absolute; left: -9999px; top: -9999px;">
+       <BusPassCard :passData="mappedData" />
+    </div>
   </q-card>
 </template>
 
 <script setup>
 import QrcodeVue from 'qrcode.vue'
-import { jsPDF } from 'jspdf'
 import { computed } from 'vue'
+import BusPassCard from 'components/BusPassCard.vue'
 
 const props = defineProps({
   app: Object,
@@ -95,62 +99,37 @@ const props = defineProps({
 
 defineEmits(['view'])
 
+// Step 2: Data Mapping from guide
+const mappedData = computed(() => ({
+  year: 2026,
+  fromDate: '2026/01/01',
+  toDate: '2026/12/31',
+  destination: `${props.app.journeyFrom} - ${props.app.journeyTo}`,
+  id: props.app.svcNo,
+  name: `${props.app.rank} ${props.app.name}`,
+  photo: props.app.documentUrl ? `https://lrscjblgerapzosnbxjw.supabase.co/storage/v1/object/public/documents/${props.app.documentUrl}` : null
+}))
+
 const verificationUrl = computed(() => {
   const baseUrl = window.location.origin + window.location.pathname
   return `${baseUrl}#/verify?id=${props.app.id}`
 })
 
-const generatePDF = async () => {
-  const doc = new jsPDF({
-    orientation: 'portrait',
-    unit: 'mm',
-    format: 'a5' // Bus pass size
-  })
+// Step 4: Printing Feature from guide
+const generatePDF = () => {
+  const printContents = document.getElementById('bus-pass').outerHTML;
+  const originalContents = document.body.innerHTML;
 
-  // Add decorative background
-  doc.setFillColor(30, 58, 138)
-  doc.rect(0, 0, 148, 30, 'F')
+  // Simple and effective printing as requested
+  document.body.innerHTML = `
+    <div style="display:flex; justify-content:center; align-items:center; min-height:100vh; background:white;">
+      ${printContents}
+    </div>
+  `;
   
-  // Header
-  doc.setTextColor(255, 215, 0)
-  doc.setFontSize(18)
-  doc.text('SRI LANKA AIR FORCE', 74, 15, { align: 'center' })
-  doc.setFontSize(12)
-  doc.text('ELECTRONIC BUS PASS (e-PAS)', 74, 22, { align: 'center' })
-
-  // Details
-  doc.setTextColor(0, 0, 0)
-  doc.setFontSize(10)
-  let y = 45
-  doc.text(`PASS NO: ${props.app.busPassNo}`, 20, y)
-  doc.text(`REQ ID: ${props.app.id}`, 90, y)
-  
-  y += 10
-  doc.setFont(undefined, 'bold')
-  doc.text(`${props.app.rank} ${props.app.name}`, 20, y)
-  doc.setFont(undefined, 'normal')
-  doc.text(`SVC NO: ${props.app.svcNo}`, 20, y + 5)
-  
-  y += 15
-  doc.text(`FROM: ${props.app.journeyFrom}`, 20, y)
-  doc.text(`TO: ${props.app.journeyTo}`, 90, y)
-  
-  y += 10
-  doc.text(`STATION: ${props.app.postedCamp}`, 20, y)
-  
-  // Add QR Code (Simplified: as text/rect if library isn't available, but here we expect jspdf support for images)
-  // For production we'd convert the qrcode-vue canvas to dataURL
-  const canvas = document.querySelector('.step-point.active canvas') || document.querySelector('canvas')
-  if (canvas) {
-    const qrData = canvas.toDataURL('image/png')
-    doc.addImage(qrData, 'PNG', 110, 60, 25, 25)
-  }
-
-  doc.setFontSize(8)
-  doc.text('This is a computer-generated document. Verification is required.', 74, 135, { align: 'center' })
-
-  doc.save(`BusPass_${props.app.svcNo}.pdf`)
-}
+  window.print();
+  window.location.reload(); 
+};
 
 const workflowSteps = [
   { label: 'Submitted', status: 'Pending Off I/C' },

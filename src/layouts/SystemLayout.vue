@@ -65,7 +65,11 @@
       </q-list>
     </q-drawer>
 
-    <!-- Page Container -->
+    <!-- Hidden Render Template for PDF Export -->
+    <div style="position: absolute; left: -5000px; top: 0; z-index: -1000; background: white;">
+      <PassTemplate :app="appStore.currentAppForRender" id="pdf-render-target" />
+    </div>
+
     <q-page-container>
       <router-view />
     </q-page-container>
@@ -76,9 +80,12 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from 'stores/auth'
+import { useApplicationStore } from 'stores/applications' // Added for render state
+import PassTemplate from 'components/PassTemplate.vue' // Added template
 
 const router = useRouter()
 const authStore = useAuthStore()
+const appStore = useApplicationStore()
 const leftDrawerOpen = ref(false)
 
 const toggleLeftDrawer = () => {

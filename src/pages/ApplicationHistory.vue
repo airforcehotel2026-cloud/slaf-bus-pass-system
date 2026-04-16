@@ -35,8 +35,8 @@
             <q-btn flat round dense icon="visibility" color="accent" @click="viewDetails(props.row)">
               <q-tooltip>View Details</q-tooltip>
             </q-btn>
-            <q-btn v-if="props.row.status === 'Completed / Pass Issued'" flat round dense icon="download" color="primary">
-              <q-tooltip>Download PDF</q-tooltip>
+            <q-btn v-if="props.row.status === 'Completed / Pass Issued'" flat round dense icon="print" color="primary" @click="generatePassPDF(props.row)">
+              <q-tooltip>Print e-Pass</q-tooltip>
             </q-btn>
           </q-td>
         </template>
@@ -87,6 +87,11 @@
         </q-card>
       </q-dialog>
     </div>
+    
+    <!-- Hidden Render for printing -->
+    <div style="position: absolute; left: -9999px; top: -9999px;">
+       <BusPassCard :passData="mappedData" id="history-pass-card" />
+    </div>
   </q-page>
 </template>
 
@@ -94,6 +99,7 @@
 import { onMounted, ref, computed } from 'vue'
 import { useApplicationStore } from 'stores/applications'
 import { useQuasar } from 'quasar'
+import BusPassCard from 'components/BusPassCard.vue'
 
 const $q = useQuasar()
 const appStore = useApplicationStore()
@@ -102,6 +108,35 @@ const detailsOpen = ref(false)
 const selectedApp = ref(null)
 const updating = ref(false)
 const editForm = ref({})
+
+const mappedData = computed(() => {
+  if (!selectedApp.value) return {}
+  const app = selectedApp.value
+  return {
+    year: 2026,
+    fromDate: '2026/01/01',
+    toDate: '2026/12/31',
+    destination: `${app.journeyFrom} - ${app.journeyTo}`,
+    id: app.svcNo,
+    name: `${app.rank} ${app.name}`,
+    photo: app.documentUrl ? `https://lrscjblgerapzosnbxjw.supabase.co/storage/v1/object/public/documents/${app.documentUrl}` : null
+  }
+})
+
+const generatePassPDF = (row) => {
+  selectedApp.value = row
+  // Wait for Vue to update mappedData
+  setTimeout(() => {
+    const printContents = document.getElementById('history-pass-card').outerHTML;
+    document.body.innerHTML = `
+      <div style="display:flex; justify-content:center; align-items:center; min-height:100vh; background:white;">
+        ${printContents}
+      </div>
+    `;
+    window.print();
+    window.location.reload();
+  }, 100)
+}
 
 onMounted(() => {
   appStore.fetchApplications()

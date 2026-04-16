@@ -9,6 +9,10 @@ const routes = [
     ]
   },
   {
+    path: '/print/:id',
+    component: () => import('pages/PrintPassPage.vue')
+  },
+  {
     path: '/dashboard',
     component: () => import('layouts/SystemLayout.vue'),
     meta: { requiresAuth: true },

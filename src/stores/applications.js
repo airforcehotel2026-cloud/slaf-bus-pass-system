@@ -5,6 +5,7 @@ export const useApplicationStore = defineStore('applications', {
   state: () => ({
     list: [],
     loading: false,
+    currentAppForRender: null,
     subscription: null
   }),
   actions: {
