@@ -26,7 +26,7 @@ export default defineRouter(function (/* { store, ssrContext } */) {
     history: createHistory(process.env.VUE_ROUTER_BASE)
   })
 
-  Router.beforeEach(async (to, from, next) => {
+  Router.beforeEach(async (to) => {
     const { useAuthStore } = await import('stores/auth')
     const authStore = useAuthStore()
     
@@ -37,15 +37,12 @@ export default defineRouter(function (/* { store, ssrContext } */) {
 
     if (to.matched.some(record => record.meta.requiresAuth)) {
       if (!authStore.user) {
-        next({ path: '/login', query: { redirect: to.fullPath } })
-      } else {
-        next()
+        return { path: '/login', query: { redirect: to.fullPath } }
       }
     } else if (to.path === '/login' && authStore.user) {
-      next({ path: '/dashboard' })
-    } else {
-      next()
+      return { path: '/dashboard' }
     }
+    return true
   })
 
   return Router
